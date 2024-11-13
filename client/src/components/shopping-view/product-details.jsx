@@ -24,7 +24,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const { toast } = useToast();
 
   function handleRatingChange(getRating) {
-
     setRating(getRating);
   }
 
@@ -79,28 +78,29 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         reviewMessage: reviewMsg,
         reviewValue: rating,
       })
-    ).then((data) => {
-      if (data.payload.success) {
-        setRating(0);
-        setReviewMsg("");
-        dispatch(getReviews(productDetails?._id));
+    )
+      .then((data) => {
+        if (data.payload.success) {
+          setRating(0);
+          setReviewMsg("");
+          dispatch(getReviews(productDetails?._id));
+          toast({
+            title: "Review added successfully!",
+          });
+        }
+      })
+      .catch((e) => {
         toast({
-          title: "Review added successfully!",
+          title:
+            "purchase this product before reviewing it or Review already exists",
+          variant: "destructive",
         });
-      }
-      else{
-        toast({
-          title: "Review already exists! or purchase this product before reviewing it!",
-          variant: "destructive"
-        });
-      }
-    });
+      });
   }
 
   useEffect(() => {
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
-
 
   const averageReview =
     reviews && reviews.length > 0
