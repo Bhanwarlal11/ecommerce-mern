@@ -26,8 +26,8 @@ const createOrder = async (req, res) => {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: `${CLIENT_BASE_URL}/shop/paypal-return`,
-        cancel_url: `${CLIENT_BASE_URL}/shop/paypal-cancel`,
+        return_url: `${process.env.CLIENT_BASE_URL}/shop/paypal-return`,
+        cancel_url: `${process.env.CLIENT_BASE_URL}/shop/paypal-cancel`,
       },
       transactions: [
         {
@@ -96,16 +96,14 @@ const createOrder = async (req, res) => {
 };
 
 const capturePayment = async (req, res) => {
+  console.log("capture payhit");
 
-  
-  
   try {
     const { paymentId, payerId, orderId } = req.body;
     console.log("capture payhit");
 
     let order = await Order.findById(orderId);
     console.log("capture payhit");
-
 
     if (!order) {
       return res.status(404).json({
@@ -114,7 +112,6 @@ const capturePayment = async (req, res) => {
       });
     }
     console.log("capture payhit");
-
 
     order.paymentStatus = "paid";
     order.orderStatus = "confirmed";
@@ -134,7 +131,6 @@ const capturePayment = async (req, res) => {
       product.totalStock -= item.quantity;
       console.log("capture payhit");
 
-
       await product.save();
     }
 
@@ -143,18 +139,16 @@ const capturePayment = async (req, res) => {
 
     await order.save();
 
-
     res.status(200).json({
       success: true,
       message: "Order confirmed",
       data: order,
     });
   } catch (e) {
-    console.log(e);
+    console.log("capture payment error: ", e);
     res.status(500).json({
       success: false,
       message: "Some error occured!",
-      error: e,
     });
   }
 };
