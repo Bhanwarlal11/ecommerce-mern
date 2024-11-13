@@ -98,10 +98,14 @@ const createOrder = async (req, res) => {
 const capturePayment = async (req, res) => {
 
   
+  
   try {
     const { paymentId, payerId, orderId } = req.body;
+    console.log("capture payhit");
 
     let order = await Order.findById(orderId);
+    console.log("capture payhit");
+
 
     if (!order) {
       return res.status(404).json({
@@ -109,6 +113,8 @@ const capturePayment = async (req, res) => {
         message: "Order can not be found",
       });
     }
+    console.log("capture payhit");
+
 
     order.paymentStatus = "paid";
     order.orderStatus = "confirmed";
@@ -126,6 +132,7 @@ const capturePayment = async (req, res) => {
       }
 
       product.totalStock -= item.quantity;
+      console.log("capture payhit");
 
 
       await product.save();
@@ -147,6 +154,7 @@ const capturePayment = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Some error occured!",
+      error: e,
     });
   }
 };
